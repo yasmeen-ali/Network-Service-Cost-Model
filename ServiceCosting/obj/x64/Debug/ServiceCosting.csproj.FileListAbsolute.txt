@@ -1,0 +1,12 @@
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\x64\Debug\ServiceCosting.exe.config
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\x64\Debug\ServiceCosting.exe
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\x64\Debug\ServiceCosting.pdb
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.csprojAssemblyReference.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.Form1.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.InfrastructureCostForm.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.Properties.Resources.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.ServicesCostForm.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.csproj.GenerateResource.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.csproj.CoreCompileInputs.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.exe
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\x64\Debug\ServiceCosting.pdb

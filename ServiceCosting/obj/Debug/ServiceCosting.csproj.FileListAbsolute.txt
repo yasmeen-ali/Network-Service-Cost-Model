@@ -1,0 +1,24 @@
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csprojAssemblyReference.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.Form1.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.InfrastructureCostForm.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.Properties.Resources.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.ServicesCostForm.resources
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csproj.GenerateResource.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csproj.CoreCompileInputs.cache
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.exe.config
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.exe
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.pdb
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.exe
+C:\Users\Yasmeen Ali\Desktop\ServiceCosting\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.pdb
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.exe.config
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.exe
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\bin\Debug\ServiceCosting.pdb
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csprojAssemblyReference.cache
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.Form1.resources
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.InfrastructureCostForm.resources
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.Properties.Resources.resources
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.ServicesCostForm.resources
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csproj.GenerateResource.cache
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.csproj.CoreCompileInputs.cache
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.exe
+E:\GitHub-Projects\ServiceCostModel\ServiceCosting\ServiceCosting\obj\Debug\ServiceCosting.pdb

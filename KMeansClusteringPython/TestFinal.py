@@ -1,0 +1,473 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from io import StringIO
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import euclidean_distances
+import numpy as np
+import fileinput
+import pandas as pd
+from matplotlib import pyplot as plt
+import sys
+import time
+import openpyxl
+
+import os.path
+from pandas.io.formats.style import Styler
+import jinja2
+from openpyxl.utils import get_column_letter
+import pprint
+import csv
+from scipy.cluster.vq import kmeans2
+import io
+# pd.set_option('display.max_columns', None)
+# pd.set_option('max_colwidth', -1)
+# pd.set_option('display.large_repr', 'truncate')
+# pd.set_option('display.max_column',None)
+# pd.set_option('display.max_seq_items',None)
+# pd.set_option('display.max_colwidth', 500)
+
+
+
+ServCal =([['0','0','0','0','0','0','0','0','0']])
+nodedata = ([['0','0']])
+ServCal.clear()
+nodedata.clear()
+
+currentservice = 'l'
+currentnodetype = '1'
+currentsize = 'l'
+currentIteration ='1'
+
+service = '1'
+NodeSize = 0
+NodeType ='1'
+Cost = 0
+Capacity = 0
+Iteration = 0
+totalnodeCostsum = 0
+totalnodeCapacitysum = 0
+
+
+# #Formatting in Dataframe
+pd.set_option('display.expand_frame_repr', False)
+pd.set_option('display.max_rows',None)
+# pd.set_option('display.float_format', '{:.8f}'.format)
+
+# Importing the dataset
+
+f = pd.read_csv('E:/GitHub-Projects/ServiceCostModel/ServiceCosting/KMeansClusteringPython/PythonFile.csv')
+
+# Working with Existing Data
+RrtPurCost = f['Cost']
+RrtInsCost = f['Cost'] * 0.2
+
+f['TotRtrCost'] = RrtPurCost + RrtInsCost
+f['UnitCost'] = f['TotRtrCost'] / f['Capacity']
+# print(df)
+f = f.drop(['Cost', 'UnitCost'], axis=1)
+SumDivold= f.groupby(['Service','Node','Iteration'], as_index=False).sum().eval('NetworkServiceUnitCostM1 = TotRtrCost / Capacity')
+# print(SumDivold,'\n')
+# #FINAL OUTPUT
+SumDivData = SumDivold.drop(['Iteration'], axis=1)
+SumDivData= SumDivData.groupby(['Service','Node' ], as_index=False).mean()
+# print(SumDivData)
+# SAVE OUTPUT IN EXCEL
+# SumDivData.to_excel('TestIterationfileM1.xlsx', sheet_name='CostGap', index=False)
+
+# For ML Algo Starts Here
+
+Lines = iter(fileinput.input(['E:/GitHub-Projects/ServiceCostModel/ServiceCosting/KMeansClusteringPython/PythonFile.csv']))
+next(Lines)
+i = 0
+for f in Lines:
+        Ln = (f)
+        #print(Ln)
+        my_list = Ln.split(',')
+        # print(my_list)
+        i = i+  1
+        # print(Lines)
+        # print(my_list)
+        if len(my_list) == 6 and i==1:
+            currentservice= my_list[0]
+            currentsize = my_list[1]
+            currentIteration = my_list[2]
+            currentnodetype = my_list[3]
+
+
+
+        # print(my_list)
+        # print(len(my_list))
+        service = my_list[0]
+        # print(my_list[0])
+        NodeSize = my_list[1]
+        # print(my_list[1])
+        Iteration = int(my_list[2])
+        NodeType = my_list[3]
+        # print(my_list[3])
+        Cost = my_list[4]
+        # print(Cost)
+        Capacity = my_list[5]
+
+        #check why this is here
+        lastservice = service
+        lastsize = NodeSize
+        lastIteration = Iteration
+        lastnode = NodeType
+
+
+
+
+        if service == currentservice and NodeSize == currentsize and Iteration == currentIteration :
+            servicechanged = 0
+            sizechanged = 0
+            Iterationchanged = 0
+
+        else:
+            # current service is set from the last loop after calculation
+            lastservice = currentservice
+            lastsize = currentsize
+            lastIteration = currentIteration
+
+            servicechanged=1
+            sizechanged = 1
+            Iterationchanged = 1
+
+        if currentnodetype == NodeType:
+            nodechanged = 0
+            sizechanged = 0
+
+        else:
+            nodechanged=1
+            # sizechanged = 0
+
+            # print("node changed")
+
+        if nodechanged==0 :
+            lastnode = NodeType
+            lastsize = NodeSize
+
+
+
+            nodedata.append([int(Cost), int(Capacity)])
+            totalnodeCostsum = totalnodeCostsum + int(Cost)
+            totalnodeCapacitysum = totalnodeCapacitysum + int(Capacity)
+
+            #NODE LEVEL
+                # put that in array to send
+
+        if nodechanged==1:
+
+                lastnode = currentnodetype
+                lastsize = currentsize
+
+                # print(nodedata)
+                #Begin AI
+                #nodedata.to_numpy()
+                # Initializing KMeans
+                #  print(currentnodetype)
+
+                kmeans = KMeans(n_clusters=3, init='k-means++', max_iter=1,algorithm='auto',n_init=1)
+                # #Fitting with inputs
+                kmeans = kmeans.fit(nodedata)
+                # # Getting the cluster centers
+                Centroids = kmeans.cluster_centers_
+                # # Predicting the clusters
+                labels = kmeans.labels_
+                Dist = kmeans.inertia_
+                dists = euclidean_distances(kmeans.cluster_centers_)
+                # print(kmeans.score(nodedata))
+                # print(Centroids)
+                # print(labels)
+                # print(len(labels))
+                # print(Dist)
+                # print(dists)
+                # tri_dists = dists[np.triu_indices(3, 1)]
+                # max_dist, avg_dist, min_dist = tri_dists.max(), tri_dists.mean(), tri_dists.min()
+                # print(tri_dists, max_dist, avg_dist, min_dist )
+#
+#                 #PLOTTING CENTROIDS AND DATA POINTS IN GROUP
+#                 centers = np.array(kmeans.cluster_centers_)
+#                 Data = np.array(nodedata)
+#                 plt.figure('3 Cluster K-Means')
+#
+#                 plt.scatter(Data[:, 0], Data[:, 1], c=kmeans.labels_,label = lastservice)
+#                 plt.legend(loc=0, bbox_to_anchor=(0.17,1.1))
+#                 plt.annotate(lastnode, xy=(95, 283), xycoords='axes points',
+#                              size=11, ha='right', va='top', color='navy')
+#
+#                 n = ['T1','T2','T3']
+#                 plt.scatter(centers[:, 0], centers[:, 1], marker="x", color='r')
+#                 for i, txt in enumerate(n):
+#                     plt.annotate(txt, (centers[:, 0][i], centers[:, 1][i]))
+#
+#
+#                 plt.xlabel('Cost')
+#                 plt.ylabel('Capacity')
+#                 plt.title('3 Cluster K-Means')
+#                 plt.grid()
+# #                 # plt.show()
+# #
+#                 plt.show(block=False)
+#                 plt.pause(2)
+#                 plt.close()
+
+                #
+                flag = 0
+                nodevalueat0 = [0,0]
+                nodevalueat1 = [0,0]
+                nodevalueat2 = [0,0]
+
+
+                nodevalueat0.clear()
+                nodevalueat1.clear()
+                nodevalueat2.clear()
+                for x in labels[:]:
+
+                    #print(x)
+                    if x ==0:
+                        nodevalueat0.append(nodedata[flag])
+                    if x==1:
+                        nodevalueat1.append(nodedata[flag])
+                    if x ==2:
+                        nodevalueat2.append(nodedata[flag])
+                    flag = flag +1
+                # print(lastnode)
+                # print(service)
+#
+
+
+
+#                     #a = np.array(nodevalueat0)
+                nodevalavg0 = np.median(np.array(nodevalueat0), axis=0)
+            # print(nodevalavg0)
+                nodevalavg1 = np.median(np.array(nodevalueat1), axis=0)
+            # print(nodevalavg1)
+                nodevalavg2 = np.median(np.array(nodevalueat2), axis=0)
+            # print(nodevalavg2)
+# #
+
+
+                # T1 Data
+                T1Count = len(nodevalueat0)
+
+                T1Cost = nodevalavg0[0]
+                T1Cap = nodevalavg0[1]
+                T1RtrCost = ((T1Cost * 0.2) + T1Cost) * T1Count
+                T1RtrCap = T1Cap * T1Count
+                # print(lastservice, lastsize, lastIteration, lastnode, T1Count, T1Cost, T1RtrCost, T1Cap, T1RtrCap)
+                ServCal.append([lastservice, lastsize, lastIteration, lastnode, T1Count, T1Cost, T1RtrCost, T1Cap, T1RtrCap])
+
+                # T2 Data
+                T2Count = len(nodevalueat1)
+
+                T2Cost = nodevalavg1[0]
+                T2Cap = nodevalavg1[1]
+                T2RtrCost = ((T2Cost * 0.2) + T2Cost) * T2Count
+                T2RtrCap = T2Cap * T2Count
+                # print(lastservice, lastsize,lastIteration, lastnode, T2Count, T2Cost, T2RtrCost, T2Cap, T2RtrCap)
+                ServCal.append([lastservice, lastsize, lastIteration, lastnode, T2Count, T2Cost, T2RtrCost, T2Cap, T2RtrCap])
+                # T3 Data
+                T3Count = len(nodevalueat2)
+
+                T3Cost = nodevalavg2[0]
+                T3Cap = nodevalavg2[1]
+                T3RtrCost = ((T3Cost * 0.2) + T3Cost) * T3Count
+                T3RtrCap = T3Cap * T3Count
+                # print(lastservice, lastsize,lastIteration, lastnode, T3Count, T3Cost, T3RtrCost, T3Cap, T3RtrCap)
+                ServCal.append([lastservice, lastsize, lastIteration, lastnode, T3Count, T3Cost, T3RtrCost, T3Cap, T3RtrCap])
+                #hold for service
+
+                #End AI
+                currentnodetype = NodeType
+                lastnode = NodeType
+                currentsize = NodeSize
+                lastsize = NodeSize
+                # currentIteration = Iteration
+                # lastIteration=Iteration
+                totalnodeCostsum = 0
+                totalnodeCapacitysum = 0
+                nodedata.clear()
+
+                nodedata.append([int(Cost), int(Capacity)])
+                # totalnodeCostsum = sum(map(float, Cost))
+                # totalnodeCapacitysum = int(Capacity)
+
+                # calculate Service  sum
+
+                # SumCost = T1Cost + T2Cost + T3Cost
+                # print( SumCost)
+
+
+        if servicechanged==1 :
+
+
+                nodechanged=2
+                currentservice = service
+                currentsize = NodeSize
+                currentIteration =Iteration
+                currentnodetype = NodeType
+                # print(nodedata)
+                nodedata.clear()
+
+                nodedata.append([int(Cost), int(Capacity)])
+                totalnodeCostsum = int(Cost)
+                totalnodeCapacitysum = int(Capacity)
+                # print('\n')
+
+
+# from sklearn.cluster import MiniBatchKMeans
+#
+# mbk = MiniBatchKMeans(init='k-means++', n_clusters=3, batch_size=6,
+#                       n_init=10, max_no_improvement=10, verbose=0)
+#
+# mbk.fit(nodedata)
+#
+# Centroids = mbk.cluster_centers_
+# labels = mbk.labels_
+
+#END OF FILE FOR LAST NODE
+
+# Initializing KMeans
+kmeans = KMeans(n_clusters=3,init='k-means++', max_iter=1,  algorithm='auto',n_init=1)
+# #Fitting with inputs
+kmeans = kmeans.fit(nodedata)
+# # Getting the cluster centers
+Centroids = kmeans.cluster_centers_
+# # Predicting the clusters
+labels = kmeans.labels_
+#Sum of Squares
+Dist = kmeans.inertia_
+dists = euclidean_distances(kmeans.cluster_centers_)
+# print (kmeans.score(nodedata))
+# print(Centroids)
+# print(labels)
+# print(len(labels))
+# print(Dist)
+# print(dists)
+# tri_dists = dists[np.triu_indices(3, 1)]
+# max_dist, avg_dist, min_dist = tri_dists.max(), tri_dists.mean(), tri_dists.min()
+# print(tri_dists, max_dist, avg_dist, min_dist)
+
+
+flag = 0
+nodevalueat0 = [0, 0]
+nodevalueat1 = [0, 0]
+nodevalueat2 = [0, 0]
+nodevalueat0.clear()
+nodevalueat1.clear()
+nodevalueat2.clear()
+for x in labels[:]:
+
+    # print(x)
+    if x == 0:
+        nodevalueat0.append(nodedata[flag])
+    if x == 1:
+        nodevalueat1.append(nodedata[flag])
+    if x == 2:
+        nodevalueat2.append(nodedata[flag])
+    flag = flag + 1
+# print(lastnode)
+# print(service)
+
+# a = np.array(nodevalueat0)
+nodevalavg0 = np.median(np.array(nodevalueat0), axis=0)
+# print(nodevalavg0)
+nodevalavg1 = np.median(np.array(nodevalueat1), axis=0)
+# print(nodevalavg1)
+nodevalavg2 = np.median(np.array(nodevalueat2), axis=0)
+# print(nodevalavg2)
+
+
+# T1 Data
+T1Count = len(nodevalueat0)
+T1Cost = nodevalavg0[0]
+T1Cap = nodevalavg0[1]
+T1RtrCost = ((T1Cost * 0.2) + T1Cost) * T1Count
+T1RtrCap = T1Cap * T1Count
+# print(lastservice, lastsize,lastIteration, lastnode, T1Count, T1Cost, T1RtrCost, T1Cap, T1RtrCap)
+ServCal.append([lastservice, lastsize, lastIteration, lastnode, T1Count, T1Cost, T1RtrCost, T1Cap, T1RtrCap])
+
+# T2 Data
+T2Count = len(nodevalueat1)
+
+T2Cost = nodevalavg1[0]
+T2Cap = nodevalavg1[1]
+T2RtrCost = ((T2Cost * 0.2) + T2Cost) * T2Count
+T2RtrCap = T2Cap * T2Count
+# print(lastservice, lastsize,lastIteration, lastnode, T2Count, T2Cost, T2RtrCost, T2Cap, T2RtrCap)
+ServCal.append([lastservice, lastsize, lastIteration, lastnode, T2Count, T2Cost, T2RtrCost, T2Cap, T2RtrCap])
+# T3 Data
+T3Count = len(nodevalueat2)
+
+T3Cost = nodevalavg2[0]
+T3Cap = nodevalavg2[1]
+T3RtrCost = ((T3Cost * 0.2) + T3Cost) * T3Count
+T3RtrCap = T3Cap * T3Count
+# print(lastservice, lastsize,lastIteration, lastnode, T3Count, T3Cost, T3RtrCost, T3Cap, T3RtrCap)
+ServCal.append([lastservice, lastsize, lastIteration, lastnode,T3Count, T3Cost, T3RtrCost, T3Cap, T3RtrCap])
+
+#PLOTTING CENTROIDS AND DATA POINTS IN GROUP
+
+# centers = np.array(kmeans.cluster_centers_)
+# Data = np.array(nodedata)
+# plt.figure('3 Cluster K-Means')
+#
+# plt.scatter(Data[:, 0], Data[:, 1], c=kmeans.labels_,label = lastservice)
+# plt.legend(loc=0, bbox_to_anchor=(0.17,1.1))
+# plt.annotate(lastnode, xy=(95, 283), xycoords='axes points',
+#                              size=11, ha='right', va='top', color='navy')
+#
+# n = ['T1','T2','T3']
+# plt.scatter(centers[:, 0], centers[:, 1], marker="x", color='r')
+# for i, txt in enumerate(n):
+#    plt.annotate(txt, (centers[:, 0][i], centers[:, 1][i]))
+#
+# plt.xlabel('Cost')
+# plt.ylabel('Capacity')
+# plt.title('3 Cluster K-Means')
+# plt.grid()
+# # # plt.show()
+# #
+# plt.show(block=False)
+# plt.pause(2)
+# plt.close()
+
+
+df = pd.DataFrame(ServCal,columns=['Service','NodeSize','Iteration','NodeType','NodeUsed', 'Cost', 'TotRtrCost', 'Cap', 'TotRtrCap'])
+# print (df)
+
+# #Group every Service for node size and Iteration
+# #Calculate Serivce Unit Cost
+
+SumDiv= df.groupby(['Service','NodeSize','Iteration'],as_index=False).sum().eval('NetworkServiceUnitCostM3 = TotRtrCost / TotRtrCap')
+# print(SumDiv)
+#
+#
+#COstGAP Calc
+SumDiv = pd.concat([SumDiv, SumDivold['NetworkServiceUnitCostM1']], axis=1)
+SumDiv = SumDiv.assign(CostGapM3=(SumDiv.NetworkServiceUnitCostM1 - SumDiv.NetworkServiceUnitCostM3) / SumDiv.NetworkServiceUnitCostM1)
+
+# print(SumDiv)
+
+#FINAL OUTPUT
+SumDiv = SumDiv.drop(['Iteration','Cost', 'TotRtrCost','Cap','TotRtrCap'], axis=1)
+
+SumDiv= SumDiv.groupby(['Service','NodeSize'], as_index=False).mean()
+
+print(SumDiv)
+
+
+from pandas import ExcelWriter
+from pandas import ExcelFile
+
+# SAVE OUTPUT IN EXCEL
+
+
+SumDiv.to_excel(r'E:/GitHub-Projects/ServiceCostModel/ServiceCosting/KMeansClusteringPython/SendtoCSharp.xlsx', sheet_name='CostGap',index = False,engine='xlsxwriter')
+
+df.to_excel('E:/GitHub-Projects/ServiceCostModel/ServiceCosting/KMeansClusteringPython/dataTestIterationfile.xlsx', sheet_name='CostGap', index=False)
+
+
+
+sys.exit()
